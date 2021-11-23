@@ -1,0 +1,10 @@
+{
+  "employee": [
+    { "id": 100, "name": "Mike" },
+    { "id": 200, "name": "Tom" }
+  ],
+  "customer": [
+    { "id": 100, "name": "NIM" },
+    { "id": 200, "name": "MAS" }
+  ]
+}
