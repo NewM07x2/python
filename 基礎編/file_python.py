@@ -141,6 +141,19 @@
 #             f.write(contents)
 
 """
+    ファイルの存在確認
+"""
+# import os 
+# # ファイルが存在しているか
+# print(os.path.exists('test.txt'))
+# # ファイルがファイルか
+# print(os.path.isfile('test.txt'))
+# # ディレクトリかどうか
+# print(os.path.isdir('test'))
+# # ファイル名変更
+# os.rename('test.txt','test2.txt')
+
+"""
     ファイルを圧縮して解凍する(tarfile)
 """
 # まずはライブラリをimport
