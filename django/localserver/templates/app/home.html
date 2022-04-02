@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main>
+      <div>file_name : {{ file_name }}</div>
+      <div>file_name : {{ test_list }}</div>
+      <ul>
+        {% for value in test_list %}
+          {% if value == 'タンパク質' %}
+            <li>{{ value }}は摂取してください。</li>
+          {% elif value == '脂質' or value == '糖質' %}
+            <li>{{ value }}は控えてください。</li>
+          {% else %}
+            <li>{{ value }}は過剰摂取控えてください。</li>
+          {% endif %} 
+        {% endfor %}
+      </ul>
+      <div>test_detail : {{ test_detail.name }}</div>
+      <div>add : {{ add }} → {{ add | add:'A'}}</div>
+      <div>upper : {{ upper }} → {{ upper | upper}}</div>
+      <div>text_length : {{ text_length }} → {{ text_length | length }}</div>
+      <div>url : {{ url }} → {{ url | urlize }}</div>
+      <div>default : {{ default_text }} → {{ default_text | default:'default' }}</div>
+      <div>number : {{ number }} → {{ number | truncatechars:5 }}</div>
+
+    </main>
+  </body>
+</html>

@@ -1,3 +1,8 @@
+from logging import exception
+
+from pyrsistent import thaw
+
+
 print('hello')
 
 A = [1, 2, 3, 4, ]
@@ -141,3 +146,5 @@ result = sayword(word)
 print(result)
 
 print('test')
+
+

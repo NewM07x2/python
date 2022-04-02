@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from re import TEMPLATE
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+print('path:',TEMPLATE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -37,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'album',  # 今回で追加したアプリ
+    'rest_framework',
+    'api',  # 今回で追加したアプリ
+    'app',  # 今回で追加したアプリ
+    # 'album',  # 今回で追加したアプリ
 ]
 
 MIDDLEWARE = [
@@ -55,7 +61,7 @@ ROOT_URLCONF = 'localserver.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

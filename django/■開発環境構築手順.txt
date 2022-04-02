@@ -4,20 +4,28 @@ conda create -n <開発環境名>
  
 2.仮想環境のアクティベート
 source activate <開発環境名>
+source activate
+source activate django   
  
 3.各々のライブラリをインストール
 conda install -c anaconda django
- 
+ conda install -c anaconda django
+
 4.インストールされたか確認
 conda list
 
 ■Django環境構築
 1.プロジェクトを作成
 django-admin startproject <環境名>
- 
-2.サーバの起動
+
+2.App追加
+python manage.py startapp blog  
+
+3.サーバの起動
 python manage.py runserver
  
-3.ブラウザで以下のURLにアクセス
+4.ブラウザで以下のURLにアクセス
 http://localhost:8000
 control+c で解除
+
+django-admin startproject Api_Weather
