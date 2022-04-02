@@ -3,8 +3,12 @@
 '''
 # standard
 from collections import defaultdict
+from concurrent.futures import thread
 import multiprocessing
+import threading
 import time
+import asyncio
+from tkinter import Y
 
 from common import common
 from logic import logic
@@ -20,15 +24,5 @@ def sampleLogic():
     print('sampleLogic終了')
 
 
-# 非同期処理
-def asyncSampleLogic():
-    print('---------------------------')
-    print('sampleLogic開始')
-    print('sampleLogic終了')
 
 
-def sampleMultiProcessing():
-    # マルチスレッド処理
-    print('---------------------------')
-    print('sampleLogic開始')
-    print('sampleLogic終了')
