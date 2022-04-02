@@ -29,9 +29,11 @@ from common import common
 from logic import logic
 import sys
 
+def main():
+    print('---■ 処理開始 ■---')
+    logic.sampleMultiProcessing()
+    print('---■ 処理終了 ■---')
 
 if __name__ == '__main__':
-    print('---■ 処理開始 ■---')
-    # logic.sampleLogic()
-    print('---■ 処理終了 ■---')
+    main()
     # input("何かキーを押すと終了します")

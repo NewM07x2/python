@@ -30,8 +30,12 @@ from logic import logic
 import sys
 
 
-if __name__ == '__main__':
+def main():
     print('---■ 処理開始 ■---')
-    # logic.sampleLogic()
+    logic.sampleMultiProcessing()
     print('---■ 処理終了 ■---')
+
+
+if __name__ == '__main__':
+    main()
     # input("何かキーを押すと終了します")
