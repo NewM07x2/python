@@ -26,13 +26,14 @@ import socketserver
 
 # pkg
 from common import common
-from logic import logic
+# from logic import logic
 import sys
 
 
 def main():
     print('---■ 処理開始 ■---')
-    logic.sampleMultiProcessing()
+    # logic.sampleMultiProcessing()
+    common.connectMySQL()
     print('---■ 処理終了 ■---')
 
 
