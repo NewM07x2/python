@@ -29,3 +29,6 @@ http://localhost:8000
 control+c で解除
 
 django-admin startproject Api_Weather
+
+source activate 環境名
+conda deactivate

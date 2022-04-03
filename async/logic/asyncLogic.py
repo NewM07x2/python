@@ -394,3 +394,4 @@ async def sampleAsync():
 
 async def sampleSingleAsync():
     await asyncio.sleep(3)
+    print("OK")

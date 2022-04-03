@@ -3,10 +3,19 @@ from email.policy import default
 from django.shortcuts import render
 import django_filters
 from rest_framework import viewsets, filters
-# Create your views here.
+import asyncio
+
+
+async def sampleSingleAsync():
+    await asyncio.sleep(5)
+    print("OK")
 
 
 def index(request):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_in_executor(None, sampleSingleAsync)
+    print("index")
     return render(request, 'app/index.html')
 
 
@@ -22,6 +31,7 @@ def home(request):
         'name': 'masato',
         'age': 27
     }
+
     add = 'add'
     upper = 'abc'
     default_text = 'def'
@@ -31,10 +41,10 @@ def home(request):
         'file_name': text,
         'test_list': testList,
         'test_detail': test_map,
-        'add':add,
-        'upper':upper,
-        'default_text':default_text,
-        'cut_text':cut_text,
+        'add': add,
+        'upper': upper,
+        'default_text': default_text,
+        'cut_text': cut_text,
         'text_length': text_length,
         'number': '1234567890',
         'url': 'https://www.google.com/'

@@ -52,7 +52,8 @@ async def main():
     # asyncLogic.sampleAsyncTask()
     # asyncLogic.sampleAsync()
 
-    asyncio.run(asyncLogic.sampleAsync())
+    asyncio.create_task(asyncLogic.sampleSingleAsync())
+    await asyncio.sleep(5)
     print('---■ 処理終了 ■---')
 
 if __name__ == '__main__':
