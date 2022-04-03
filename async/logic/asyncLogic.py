@@ -8,6 +8,7 @@ import multiprocessing
 import threading
 import time
 import asyncio
+from bitarray import test
 
 from gevent import wait
 import aiohttp
@@ -183,22 +184,22 @@ async def asyncProcessTest1(event, index):
     await event.wait()
     print('asyncProcessTest1 start', index)
     await asyncio.sleep(index)
-    print('asyncProcessTest1 end',index)
+    print('asyncProcessTest1 end', index)
 
 
 async def asyncProcessTest2(event, index):
     index = 2
     await event.wait()
-    print('asyncProcessTest2 start',index)
+    print('asyncProcessTest2 start', index)
     await asyncio.sleep(index)
-    print('asyncProcessTest2 end',index)
+    print('asyncProcessTest2 end', index)
 
 
 async def asyncProcessTest3(event, index):
     index = 3
-    print('asyncProcessTest3 start',index)
+    print('asyncProcessTest3 start', index)
     await asyncio.sleep(index)
-    print('asyncProcessTest3 end',index)
+    print('asyncProcessTest3 end', index)
     event.set()
 
 
@@ -219,6 +220,8 @@ def sampleasyncProcess2():
 # asyncio.condition
 # condition.notify_all()で発火させたのち１つずつ処理を行っていく
 # --------------------------------------------------------------------------------
+
+
 async def asyncProcessTest1(condition, index):
     index = 1
     async with condition:
@@ -260,3 +263,134 @@ def sampleasyncProcess3():
     ))
     asyncLoop2.close()
 
+# --------------------------------------------------------------------------------
+# asyncio.queue
+# 同時にタスクを走らせて、一方でキューにデータを格納し、他方でその値を仕様する方法
+# 複数使用することはできないので、その場合はeventなどを用いて発火のタイミングを指定する必要がある。
+# --------------------------------------------------------------------------------
+
+
+async def test1(queue, event):
+    index = 1
+    print('test1 start')
+    x = 100
+    await queue.put(x)
+    # await asyncio.sleep(index)
+    print('test1 end', x)
+
+
+async def test2(queue, event):
+    index = 2
+    print('test2 start')
+    x = await queue.get()
+    await asyncio.sleep(index)
+    x = x + 100
+    await queue.put(x)
+    print('test2 end', x)
+    event.set()
+
+
+async def test3(queue, event):
+    index = 3
+    await event.wait()
+    print('test3 start')
+    x = await queue.get()
+    await asyncio.sleep(index)
+    x = x + 100
+    print('test3 end', x)
+
+
+def sampleAsyncQueue():
+    index = 0
+    queue = asyncio.Queue()
+    event = asyncio.Event()
+    asyncLoop2 = asyncio.get_event_loop()
+    asyncLoop2.run_until_complete(asyncio.wait(
+        [
+            test1(queue, event),
+            test2(queue, event),
+            test3(queue, event)
+        ]
+    ))
+    asyncLoop2.close()
+
+# --------------------------------------------------------------------------------
+# Future
+# asyncio.Future()
+# Futureオブジェクトを生成し、そのオブジェクトが非同期関数で終了したかを判断する。
+# --------------------------------------------------------------------------------
+
+
+async def test(future):
+    print('test start')
+    await asyncio.sleep(2)
+    future.set_result('future finish!!!')
+    print('test end')
+
+
+async def sampleAsyncFuture():
+    # loop = asyncio.get_event_loop()
+    future = asyncio.Future()
+    asyncio.ensure_future(test(future))
+    # loop.run_until_complete(future)
+    print(future.result())
+    # loop.close()
+
+# --------------------------------------------------------------------------------
+# コルーチンのチェーン
+# --------------------------------------------------------------------------------
+
+
+async def compute(x, y):
+    # computeはprint_sumのタスクとして配置
+    # 結果を返却する。
+    print("Compute %s + %s ..." % (x, y))
+    await asyncio.sleep(2)
+    return x + y
+
+
+async def print_sum(x, y):
+    result = await compute(x, y)
+    print("%s + %s = %s" % (x, y, result))
+
+
+def sampleAsyncTask():
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(print_sum(1, 2))
+    loop.close()
+
+
+# --------------------------------------------------------------------------------
+# sample
+# --------------------------------------------------------------------------------
+Seconds = {
+    'frist': 1,
+    'second': 2,
+    'third': 3
+}
+
+
+async def work1():
+    for key, value in Seconds.items():
+        print(key, value)
+        await asyncio.sleep(value)
+
+
+async def work2():
+    for key, value in Seconds.items():
+        print(key, value)
+        await asyncio.sleep(value)
+
+
+async def sampleAsync():
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(asyncio.wait([
+        # work1(),
+        # work2()
+        sampleSingleAsync()
+    ]))
+    loop.close()
+
+
+async def sampleSingleAsync():
+    await asyncio.sleep(3)

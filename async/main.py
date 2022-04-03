@@ -34,30 +34,26 @@ from logic import asyncLogic
 import sys
 
 
-def main():
+async def test():
+    print('start')
+    await asyncio.sleep(1)
+    print('end')
+
+
+async def main():
     print('---■ 処理開始 ■---')
     # asyncLogic.sampleMultiProcessing()
     # asyncLogic.SynchronousProcessing()
     # asyncio.run(asyncLogic.asyncProcess2())
     # asyncLogic.sampleasyncProcess2()
-    asyncLogic.sampleasyncProcess3()
+    # asyncLogic.sampleasyncProcess3()
+    # asyncLogic.sampleAsyncQueue()
+    # asyncio.run(asyncLogic.sampleAsyncFuture())
+    # asyncLogic.sampleAsyncTask()
+    # asyncLogic.sampleAsync()
+
+    asyncio.run(asyncLogic.sampleAsync())
     print('---■ 処理終了 ■---')
 
-
-def commandRun():
-    try:
-        # res = subprocess.check_call('dummy')
-        # print(res)
-        res = subprocess.call('ls')
-        print(res)
-        subprocess.check_output('ls')
-        print(res)
-
-    except:
-        print("Error.")
-
-
 if __name__ == '__main__':
-    # main()
-    commandRun()
-    # input("何かキーを押すと終了します")
+    asyncio.run(main())
