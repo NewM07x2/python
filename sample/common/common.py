@@ -27,7 +27,7 @@ def connectMySQL():
             print(user_name)
         cnx.close()
     except Exception as e:
-        print(f"Error Occurred: {e}")python3 --version
+        print(f"Error Occurred: {e}")
 
 # 文字コード変換処理
 

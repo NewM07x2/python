@@ -12,6 +12,5 @@ class TestAPI(views.APIView):
 
 class ListAPI(generics.ListCreateAPIView):
     queryset = models.User.objects.all()
-    serializer_class = serializers.TestSerializer
+    serializer_class = serializers.getNameSerializer
     permission_class = []
-
