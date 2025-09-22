@@ -6,7 +6,8 @@ conda create -n <開発環境名>
 source activate <開発環境名>
 source activate
 source activate django   
- 
+conda deactivate
+
 3.各々のライブラリをインストール
 conda install -c anaconda django
 
@@ -27,10 +28,6 @@ python manage.py runserver
 http://localhost:8000
 control+c で解除
 
-django-admin startproject Api_Weather
-
-source activate 環境名
-conda deactivate
 
 よく使用するコマンド
 django-admin startproject <プロジェクト名>
@@ -53,6 +50,6 @@ DB参照
 
 psql -h 127.0.0.1 -p 5433 -U postgres postgres
 
-CREATE TABLE user (id integer, name varchar(10), age integer))」
+CREATE TABLE user (id integer, name varchar(10), age integer)
 
 \c django

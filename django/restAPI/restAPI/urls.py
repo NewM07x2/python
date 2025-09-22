@@ -20,7 +20,7 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/api/', permanent=False)),  # 追加
+    path('', RedirectView.as_view(url='/api/', permanent=False)),  # apiへリダイレクト
     path("admin/", admin.site.urls),
     path('api/', include('api.urls')),
 ]
