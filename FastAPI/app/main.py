@@ -21,7 +21,7 @@ def DBConnect():
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello FastAPI"}C
+    return {"message": "Hello FastAPI"}
 
 
 @app.get("/test")
