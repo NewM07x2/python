@@ -4,10 +4,16 @@ from rest_framework import viewsets
 from .models import User, Task, Test
 from .serializers import UserSerializer, TaskSerializer, TestSerializer
 
+
+async def sampleSingleAsync():
+    await asyncio.sleep(5)
+    print("OK")
+
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    await sampleSingleAsync()
 
 # Create your views here.
 class TaskViewSet(viewsets.ModelViewSet):
@@ -18,3 +24,4 @@ class TaskViewSet(viewsets.ModelViewSet):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
+
