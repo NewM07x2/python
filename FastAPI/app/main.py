@@ -39,5 +39,4 @@ def get_customer():
 @app.get("/test-db")
 def test_db(db=Depends(DBConnect)):
     # ここでdbを使ってDB操作が可能
-
     return {"status": "connected"}

@@ -6,9 +6,8 @@ class CustomerService:
         self.customer = CustomerModel()
 
     def getCustomerData(self):
-        
         return {
-            # "id": self.id,
-            # "name": self.name,
-            # "email": self.email
+            "id": self.customer.id,
+            "name": self.customer.name,
+            "email": self.customer.email
         }

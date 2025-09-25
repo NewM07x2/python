@@ -38,6 +38,8 @@ python manage.py migrate
 python manage.py createsuperuser 
 python manage.py runserver
 
+django経由でDB接続
+python manage.py dbshell
 ■PostgreSQLコマンド
 コンテナ起動
 docker-compose -f postgres.yml up -d 
