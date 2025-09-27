@@ -1,0 +1,12 @@
+コマンドを使ってモデルをダウンロードする
+https://ollama.com/search
+
+ollama run gemma2:2b
+
+ダウンロードされたモデルを見る
+ollama list
+
+ダウンロードしたモデルを削除する
+ollama rm gemma2:9b
+
+ローカルLLMをRoo-codeと連帯させてみる
