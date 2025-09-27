@@ -40,3 +40,7 @@ def get_customer():
 def test_db(db=Depends(DBConnect)):
     # ここでdbを使ってDB操作が可能
     return {"status": "connected"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="localhost", port=8000)
