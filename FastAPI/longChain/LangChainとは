@@ -1,0 +1,245 @@
+## LangChainとは
+
+まずはじめに、本レシピで使用するLLMフレームワークであるLangChainについて学んでいきましょう。
+
+LangChainは、ChatGPTなどの大規模言語モデルによって動くアプリケーションを開発するためのフレームワークです。
+LangChainは大きくModel I/O、Data connection、Chains、Memory、Agents、Callbacksといった6つのモジュールから構成されています。
+
+### Model I/O. 
+Model I/Oは様々な大規模言語モデルとのインタフェースを提供します。  
+インターフェースにはプロンプトのテンプレートや言語モデルの呼び出しなどがあります。
+
+### Data connection
+Data connectionは大規模言語モデルに含まれていないユーザ固有のデータを扱うための機能を提供します。  
+ユーザ固有データのロード、変換、保存、クエリを行うことができるようになります。
+
+### Chains
+Chainsは大規模言語モデル同士、あるいは他のコンポーネントと連鎖を行う機能を提供します。  
+これにより複雑なアプリケーションを作成することができるようになります。
+
+### Memory
+Memoryは以前のやり取りを記憶しておくための機能を提供します。  
+ChainsやAgentsはステートレスのため、やり取りを記憶しておくことができません。
+
+### Agents
+Agentsはユーザの入力に応じて使用するtoolを決定して呼び出すことができます。  
+Agentsは複数のToolsを使用することができ、あるtoolの出力を次のtoolの入力として使用することもできます。
+
+### Callbacks
+Callbacksはアプリケーションがフックするためのコールバックを提供します。
+例えば、ロギング、モニタリング、ストリーミングなどに使用することができます。
+
+------------------------------------------------------------------------------------------------------------
+
+## LangServeとは
+LangServeは、開発者がLangChainのrunnableとchainsをREST APIとしてデプロイするのをサポートします。  
+LangServeはFastAPIと統合されており、データ検証にpydanticを使用しています。  
+さらに、serverにデプロイされたrunnableを呼び出すために使用できるclientを提供します。
+
+また、LangServeは以下のような特徴を備えています。
+
+- Swagger UIによるAPIドキュメントページ  
+- 1つのサーバで多数の同時リクエストをサポート  
+- ストリーミング出力と中間ステップの参照が可能なPlaygroundページのサポート  
+- FastAPI、PydanticのようなオープンソースのPythonライブラリで構築  
+
+------------------------------------------------------------------------------------------------------------
+
+### プログラムの作成 
+それでは、実際にLangServeを使ったプログラムを作成していきましょう。 
+本レシピではUbuntuインストールマシンのローカルホストにサーバを起動します。 
+クライアントもUbuntuインストールマシンから実行します。
+
+### OpenAI keyの取得
+はじめに、本レシピのプログラムはChatGPTのAPIを使用して動作するため、OpenAI Keyを発行しましょう。  
+KeyはOpenAIのアカウント作成した後、以下URLから発行可能です。  
+Keyの作成時には、事前にBillingでクレジットカードの登録をしておきましょう。  
+https://platform.openai.com/account/api-keys  
+
+Create new secret keyボタンを押下すると新規にKeyの発行ができます。発行したKeyはテキストなどにメモしておきましょう。  
+```
+sk-XXXXXXX
+```
+
+### Setup
+初めにプログラムの作成に必要なSetupを行います。  
+プログラムの実行に必要なpythonライブラリをインストールします。
+```
+$ pip install langserve
+$ pip install fastapi
+$ pip install openai
+$ pip install sse_starlette
+```
+
+#### Serverプログラム
+次にServerプログラムを用意しましょう。  
+プログラムはserver.pyという名前で保存します。  
+OPENAI_API_KEYには、先ほどメモしたOpenAI API Keyを入力しましょう。  
+
+このServerプログラムでは、ChatOpenAIを使ってあるtopicについてジョークを言うchainを実行します。  
+ジョークを言うchainはパスに"/joke"を指定することで実行されます。
+
+また、ブラウザからエンドポイントを呼び出す場合は、CORS（クロスオリジンリソース共有）ヘッダも設定する必要があります。  
+
+```
+import os
+from fastapi import FastAPI
+from langchain.prompts import ChatPromptTemplate
+from langchain.chat_models import ChatOpenAI
+from langserve import add_routes
+from fastapi.middleware.cors import CORSMiddleware
+
+os.environ["OPENAI_API_KEY"] = "XXXXXXX"
+
+app = FastAPI(
+    title="LangChain Server",
+    version="1.0",
+    description="A simple api server using Langchain's Runnable interfaces",
+)
+
+
+# Set all CORS enabled origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
+
+add_routes(
+    app,
+    ChatOpenAI(),
+    path="/openai",
+)
+
+model = ChatOpenAI()
+prompt = ChatPromptTemplate.from_template("tell me a joke about {topic}")
+add_routes(
+    app,
+    prompt | model,
+    path="/joke",
+)
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="localhost", port=8000)
+```
+
+ターミナルから以下コマンドを実行してServerを起動しましょう。
+
+```
+$ python server.py
+```
+
+以下のようにSeverが起動します。
+
+INFO:     Started server process [18673]  
+INFO:     Waiting for application startup  
+
+
+```
+ __          ___      .__   __.   _______    _______. _______ .______     ____    ____  _______
+|  |        /   \     |  \ |  |  /  _____|  /       ||   ____||   _  \    \   \  /   / |   ____|
+|  |       /  ^  \    |   \|  | |  |  __   |   (----`|  |__   |  |_)  |    \   \/   /  |  |__
+|  |      /  /\   \   |  . `  | |  |  | |    \   \   |   __|  |      /      \      /   |   __|
+|  `----./  _____  \  |  |\   | |  |__| | .----)   | |  |____ |  |\  \----.  \    /    |  |____
+|_______/__/     \__\ |__| \__|  \______| |_______/  |_______|| _| `._____|   \__/     |_______|
+
+LANGSERVE: Playground for chain "/joke/" is live at:
+LANGSERVE:  │
+LANGSERVE:  └──> /joke/playground/
+LANGSERVE:
+LANGSERVE: Playground for chain "/openai/" is live at:
+LANGSERVE:  │
+LANGSERVE:  └──> /openai/playground/
+LANGSERVE:
+LANGSERVE: See all available routes at /docs/
+
+LANGSERVE: ⚠️ Using pydantic 2.6.3. OpenAPI docs for invoke, batch, stream, stream_log endpoints will not be generated. API endpoints and playground should work as expected. If you need to see the docs, you can downgrade to pydantic 1. For example, pip install pydantic==1.10.13. See https://github.com/tiangolo/fastapi/issues/10360 for details.
+
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://localhost:8000 (Press CTRL+C to quit)
+```
+
+
+### Clientプログラム
+次にClientプログラムを用意しましょう。  
+プログラムはclient.pyという名前で保存します。  
+Clientプログラムでは、topicに"cats"を指定してジョークをリクエストします。  
+
+```
+import requests
+
+response = requests.post(
+    "http://localhost:8000/joke/invoke",
+    json={'input': {'topic': 'cats'}}
+)
+print(response.json())
+```
+
+Serverプログラムを実行しているターミナルとは別にターミナルを立ち上げて以下コマンドを実行しましょう。  
+
+```
+$ python client.py
+```
+Serverプログラムから"cats"に関するジョークが返ってきました。
+
+```
+{'output': {'content': 'Why was the cat sitting on the computer?\n\nBecause it wanted to keep an eye on the mouse!', 'additional_kwargs': {}, 'type': 'ai', 'name': None, 'id': None, 'example': False}, 'callback_events': [], 'metadata': {'run_id': 'b9dbb39d-1e6d-4cc0-be56-f741b18d80b2'}}
+```
+
+Serverを実行しているターミナルには以下が出力されています。
+
+```
+INFO:     127.0.0.1:39038 - "POST /joke/invoke HTTP/1.1" 200 OK
+```
+
+### curlによる実行
+今度はclientプログラムではなく、curlコマンドを使って実行してみます。  
+Serverプログラムを実行しているターミナルとは別にターミナルを立ち上げて以下コマンドを実行しましょう。
+
+```
+$ curl --location --request POST 'http://localhost:8000/joke/invoke' --header 'Content-Type: application/json' --data-raw '{
+    "input": {
+        "topic": "cats"
+    }
+}'
+```
+先ほどと同様に"cats"に関するジョークが返ってきます。
+
+```
+{"output":{"content":"Why was the cat sitting on the computer?\n\nBecause it wanted to keep an eye on the mouse!","additional_kwargs":{},"type":"ai","name":null,"id":null,"example":false},"callback_events":[],"metadata":{"run_id":"e3832a54-e6e9-43d3-9dd1-4c79e4385f1c"}}
+Serverを実行しているターミナルには以下が出力されています。
+```
+```
+INFO:     127.0.0.1:59288 - "POST /joke/invoke HTTP/1.1" 200 OK
+```
+
+### Playground
+今度はPlaygroundを使ってみます。  
+ブラウザから以下URLにアクセスしてみましょう。  
+```
+http://127.0.0.1:8000/joke/playground/
+```
+InputsのTOPICに"cats"と入力してStartボタンを押してみると、catsに関するジョークがOutputに出力されます。  
+intermediate stepsを展開すると、ChatPromptTemplateやChatOpenAIといった中間ステップを確認することができます。
+
+### APIドキュメント
+最後にAPIドキュメントも参照してみましょう。  
+ブラウザから以下URLにアクセスしてみましょう。  
+```
+http://127.0.0.1:8000/docs  
+```
+Swagger UIでドキュメントが表示されます。
+
+さて、今回はLangServeを使ってChatGPTをREST API化する方法をご紹介しました。学習してきた内容は以下です。
+
+
+- LangChainは、ChatGPTなどの大規模言語モデルによって動くアプリケーションを開発するためのフレームワーク
+- REST APIは、Web上のシステム間でデータをやり取りするための規約
+- FastAPIは、PythonでREST APIを構築するための高速なWebフレームワーク
+- LangServeはLangChainで作ったLLMのアプリケーションをAPI化するためのツール
