@@ -10,3 +10,30 @@ ollama list
 ollama rm gemma2:9b
 
 ローカルLLMをRoo-codeと連帯させてみる
+
+モデルをローカルで起動する手順
+ollama run <モデル名>
+ollama run llama3
+
+
+### Ollamaのバックグランド起動方法
+ollama serve
+
+### Ollamaの停止方法
+pkill ollama
+
+CURLを使った基本的なリクエスト
+ターミナルからcURLを使って簡単なリクエストを送信できます：
+curl  -X POST "http://127.0.0.1:8000/chatbot" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "model": "gemma3:4b",
+        "messages": [
+            {
+                "role": "user",
+                "content": "ChatGPTを開発している企業を答えてください。"
+            }
+        ]
+    }'
+
+
