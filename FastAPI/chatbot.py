@@ -27,4 +27,4 @@ async def chatbot(req: ChatRequest):
 curl -X POST http://127.0.0.1:8000/chatbot \
      -H "Content-Type: application/json" \
      -d '{"model_alias":"gemma3:4b","question":"こんにちは、AIとは何ですか？"}'
-"""
+""" 
